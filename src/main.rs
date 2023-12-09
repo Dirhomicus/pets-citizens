@@ -1,10 +1,10 @@
-use pets_citizens::{manager::*, pet::{Species, Sex, Size}};
+use pets_citizens::{csv_reader, manager::*, pet::*};
 
 fn main() {
-    let pets = read_csv();
+    let pets = csv_reader::read_csv();
     // pets.iter().for_each(|pet| println!("{:?}", pet));
     let manager = Manager::new(&pets);
-    // manager.write_csv();
+    manager.write_csv();
     println!("------------ FIND MICROCHIP ------------");
     println!("{:?}", manager.find_by_microchip(900113000295973));
     println!("------------ COUNT SPECIES ------------");

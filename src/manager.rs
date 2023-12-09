@@ -1,40 +1,5 @@
-use std::fs::File;
-use csv::{ReaderBuilder, Writer};
-use crate::pet::{Pet, Species, Sex, Size};
+use crate::pet::*;
 
-pub fn read_csv() -> Vec<Pet> {
-	let file = File::open("pets-citizens.csv").expect("no pets-citizens.csv file found!");
-	let mut reader = ReaderBuilder::new().delimiter(b';').from_reader(file);
-    reader.deserialize::<Pet>()
-        .filter_map(Result::ok)
-        .map(assign_id)
-        .collect()
-}
-
-fn assign_id(pet: Pet) -> Pet {
-    let number: String = pet.microchip.to_string().chars().rev().take(12).collect();
-    let species_letter = match pet.species {
-        Species::Canino => 'C',
-        Species::Felino => 'F',
-    };
-    let sex_letter = match pet.sex {
-        Sex::Hembra => 'H',
-        Sex::Macho => 'M',
-    };
-    let size_letters = match pet.size {
-        Size::Miniatura => "MI",
-        Size::Pequeño => "P",
-        Size::Mediano => "M",
-        Size::Grande => "G",
-		Size::MuyGrande => "MG",
-    };
-    let potent_letter = match pet.potent_dangerous {
-        true => 'T',
-        false => 'F'
-    };
-    let id = format!("{number}-{species_letter}{sex_letter}{size_letters}{potent_letter}");
-    Pet { id, microchip: pet.microchip, species: pet.species, sex: pet.sex, size: pet.size, potent_dangerous: pet.potent_dangerous, neighborhood: pet.neighborhood }
-}
 pub struct Manager<'a> {
 	pets: &'a Vec<Pet>
 }
@@ -50,13 +15,10 @@ impl<'a> Manager<'a> {
 	}
 
 	pub fn write_csv(&self) {
-		let mut file = Writer::from_path("new-pets-citizens.csv").expect("bad writer");
-		self.pets.iter().for_each(|pet| {
-			match file.serialize(pet) {
-				Ok(record) => record,
-				Err(e) => eprintln!("{e}")
-			}
-		});
+		let mut file = csv::Writer::from_path("new-pets-citizens.csv").expect("bad writer");
+		for pet in self.pets {
+			if let Err(e) = file.serialize(pet) { eprintln!("{e}") }
+		}
 	}
 
 	pub fn find_by_microchip(&self, microchip: u64) -> Option<&Pet> {
