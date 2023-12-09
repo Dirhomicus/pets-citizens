@@ -19,21 +19,18 @@ pub struct Pet {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
-#[serde(rename_all = "UPPERCASE")]
 pub enum Species {
 	Canino,
 	Felino
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
-#[serde(rename_all = "UPPERCASE")]
 pub enum Sex {
     Macho,
     Hembra
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
-#[serde(rename_all = "UPPERCASE")]
 pub enum Size {
     Miniatura,
     Pequeño,
@@ -47,7 +44,7 @@ fn default_id() -> String {
 }
 
 fn match_potent<'de, D>(deserializer: D) -> Result<bool, D::Error> where D: de::Deserializer<'de> {
-    let s: &str = de::Deserialize::deserialize(deserializer)?;
+    let s = de::Deserialize::deserialize(deserializer)?;
     match s {
         "SI" => Ok(true),
         "NO" => Ok(false),
@@ -56,37 +53,37 @@ fn match_potent<'de, D>(deserializer: D) -> Result<bool, D::Error> where D: de::
 }
 
 fn match_species<'de, D>(deserializer: D) -> Result<Species, D::Error> where D: de::Deserializer<'de> {
-   let s: &str = de::Deserialize::deserialize(deserializer)?;
-   match s {
-       "CANINO" => Ok(Species::Canino),
-       "FELINO" => Ok(Species::Felino),
-       _ => Err(de::Error::unknown_variant(s, &["Canino", "Felino"])),
-   }
+    let s = de::Deserialize::deserialize(deserializer)?;
+    match s {
+        "CANINO" => Ok(Species::Canino),
+        "FELINO" => Ok(Species::Felino),
+        _ => Err(de::Error::unknown_variant(s, &["Canino", "Felino"])),
+    }
 }
 
 fn match_sex<'de, D>(deserializer: D) -> Result<Sex, D::Error> where D: de::Deserializer<'de> {
-   let s: &str = de::Deserialize::deserialize(deserializer)?;
-   match s {
-       "MACHO" => Ok(Sex::Macho),
-       "HEMBRA" => Ok(Sex::Hembra),
-       _ => Err(de::Error::unknown_variant(s, &["Macho", "Hembra"])),
-   }
+    let s = de::Deserialize::deserialize(deserializer)?;
+    match s {
+        "MACHO" => Ok(Sex::Macho),
+        "HEMBRA" => Ok(Sex::Hembra),
+        _ => Err(de::Error::unknown_variant(s, &["Macho", "Hembra"])),
+    }
 }
 
 fn match_size<'de, D>(deserializer: D) -> Result<Size, D::Error> where D: de::Deserializer<'de> {
-   let s: &str = de::Deserialize::deserialize(deserializer)?;
-   match s{
-       "MINIATURA" => Ok(Size::Miniatura),
-       "PEQUEÑO" => Ok(Size::Pequeño),
-       "MEDIANO" => Ok(Size::Mediano),
-       "GRANDE" => Ok(Size::Grande),
-       "MUY GRANDE" => Ok(Size::MuyGrande),
-       _ => Err(de::Error::unknown_variant(s, &["Miniatura", "Pequeño", "Mediano", "Grande", "MuyGrande"])),
-   }
+    let s = de::Deserialize::deserialize(deserializer)?;
+    match s {
+        "MINIATURA" => Ok(Size::Miniatura),
+        "PEQUEÑO" => Ok(Size::Pequeño),
+        "MEDIANO" => Ok(Size::Mediano),
+        "GRANDE" => Ok(Size::Grande),
+        "MUY GRANDE" => Ok(Size::MuyGrande),
+        _ => Err(de::Error::unknown_variant(s, &["Miniatura", "Pequeño", "Mediano", "Grande", "MuyGrande"])),
+    }
 }
 
 fn match_unidentified<'de, D>(deserializer: D) -> Result<String, D::Error> where D: de::Deserializer<'de> {
-    let s: &str = de::Deserialize::deserialize(deserializer)?;
+    let s = de::Deserialize::deserialize(deserializer)?;
     match s {
         "SIN IDENTIFICAR" => Err(de::Error::unknown_variant(s, &["Real Neighborhoods"])),
         "" => Err(de::Error::unknown_variant(s, &["Some Neighborhood"])),
